@@ -76,6 +76,7 @@ var employeeSchema = new mongoose.Schema({
   tourDetail:[{type:mongoose.Schema.Types.ObjectId, ref: "TourDetail"}],
   addExpense:[{type:mongoose.Schema.Types.ObjectId, ref: "AddExpense"}],
   jbChangeVoc:[{type:mongoose.Schema.Types.ObjectId, ref: "JbChangeVoc"}],
+  irTest:[{type:mongoose.Schema.Types.ObjectId, ref: "IrTest"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
@@ -501,6 +502,49 @@ var JbChangeVoc = mongoose.model(
 );
 
 const JbChangeVocValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake: Joi.string()
+    .max(100)
+    .required()
+});
+////////////IR Test Schema
+var irTestSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  ModuleMake: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+irTestSchema.plugin(autoIncrement.plugin, {
+  model: "irTest",
+  field: "IrTestID"
+});
+
+var IrTest = mongoose.model(
+  "IrTest",
+  irTestSchema
+);
+
+const IrTestValidation = Joi.object().keys({
   OANumber: Joi.string()
     .max(100)
     .required(),
@@ -3623,6 +3667,243 @@ app.delete("/api/jbChange-Voc-hr/:id/:id2", verifyHR, (req, res) => {
             function (err, numberAffected) {
               console.log(numberAffected);
               res.send(jbChangeVoc);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+
+
+
+/////////////////////
+////////////IR Test Report  Employee  
+app.get("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "irTest"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, IrTestValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newIrTest;
+          newIrTest = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            ModuleMake:req.body.ModuleMake,
+            employee: req.params.id
+
+          };
+
+          IrTest.create(newIrTest, function (
+            err,
+            irTest
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.irTest.push(irTest);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(irTest);
+                }
+              });
+              console.log("Ir Test Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, IrTestValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newIrTest;
+
+      newIrTest= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            ModuleMake:req.body.ModuleMake,
+            employee: req.params.id
+      };
+
+      IrTest.findByIdAndUpdate(
+        req.params.id,
+        newIrTest,
+        function (err, irTest) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newIrTest);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/ir-test-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        IrTest.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          irTest
+        ) {
+          if (!err) {
+            console.log("Ir Test Report deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { irTest: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(irTest);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////IR Test Report HHHHHHRRRRR
+app.get("/api/ir-test-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  IrTest.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, irTest) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(irTest);
+      }
+    });
+});
+
+app.put("/api/ir-test-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, IrTestHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newIrTest;
+
+      newIrTest = {
+        Status: req.body.Status
+      };
+      IrTest.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newIrTest
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newIrTest);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/ir-test-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      IrTest.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        irTest
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { irTest: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(irTest);
             }
           );
         } else {
