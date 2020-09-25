@@ -77,6 +77,10 @@ var employeeSchema = new mongoose.Schema({
   addExpense:[{type:mongoose.Schema.Types.ObjectId, ref: "AddExpense"}],
   jbChangeVoc:[{type:mongoose.Schema.Types.ObjectId, ref: "JbChangeVoc"}],
   irTest:[{type:mongoose.Schema.Types.ObjectId, ref: "IrTest"}],
+  visualInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "VisualInspectionReport"}],
+  elInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "ElInspectionReport"}],
+  manualThermographyReport:[{type:mongoose.Schema.Types.ObjectId, ref: "ManualThermographyReport"}],
+  droneThermographyInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "DroneThermographyInspectionReport"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
@@ -523,6 +527,90 @@ const JbChangeVocValidation = Joi.object().keys({
     .max(100)
     .required()
 });
+////////////ElInspectionReport Schema
+var elInspectionReportSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+elInspectionReportSchema.plugin(autoIncrement.plugin, {
+  model: "elInspectionReport",
+  field: "ElInspectionReportID"
+});
+
+var ElInspectionReport = mongoose.model(
+  "ElInspectionReport",
+  elInspectionReportSchema
+);
+
+const ElInspectionReportValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
+
+////////////Visual Inspection Report Schema
+var visualInspectionReportSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+visualInspectionReportSchema.plugin(autoIncrement.plugin, {
+  model: "visualInspectionReport",
+  field: "VisualInspectionReportID"
+});
+
+var VisualInspectionReport = mongoose.model(
+  "VisualInspectionReport",
+  visualInspectionReportSchema
+);
+
+const VisualInspectionReportValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
+
+
+
 ////////////IR Test Schema
 var irTestSchema = new mongoose.Schema({
   OANumber: { type: String, required: true },
@@ -531,7 +619,6 @@ var irTestSchema = new mongoose.Schema({
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
-  ModuleMake: { type: String, required: true },
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
 irTestSchema.plugin(autoIncrement.plugin, {
@@ -562,10 +649,92 @@ const IrTestValidation = Joi.object().keys({
   ReportedBy: Joi.string()
     .max(100)
     .required(),
-  ModuleMake: Joi.string()
-    .max(100)
-    .required()
+  
 });
+
+
+
+////////////manualThermographyReport Schema
+var manualThermographyReportSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+manualThermographyReportSchema.plugin(autoIncrement.plugin, {
+  model: "manualThermographyReport",
+  field: "ManualThermographyReportID"
+});
+
+var ManualThermographyReport = mongoose.model(
+  "ManualThermographyReport",
+  manualThermographyReportSchema
+);
+
+const ManualThermographyReportValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
+////////////Dron Thermographic Inspection Schema
+var droneThermographyInspectionReportSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+droneThermographyInspectionReportSchema.plugin(autoIncrement.plugin, {
+  model: "droneThermographyInspectionReport",
+  field: "DroneThermographyInspectionReportID"
+});
+
+var DroneThermographyInspectionReport = mongoose.model(
+  "DroneThermographyInspectionReport",
+  droneThermographyInspectionReportSchema
+);
+
+const DroneThermographyInspectionReportValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
+
 //////////////////////////////////
 //////////////////Role
 var roleSchema = new mongoose.Schema({
@@ -3734,7 +3903,6 @@ app.post("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
-            ModuleMake:req.body.ModuleMake,
             employee: req.params.id
 
           };
@@ -3783,7 +3951,6 @@ app.put("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
-            ModuleMake:req.body.ModuleMake,
             employee: req.params.id
       };
 
@@ -3916,6 +4083,941 @@ app.delete("/api/ir-test-hr/:id/:id2", verifyHR, (req, res) => {
     }
   });
 });
+
+
+/////////////////////
+////////////visualInspectionReport  Employee  
+app.get("/api/visual-inspection-report-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "visualInspectionReport"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/visual-inspection-report-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, VisualInspectionReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newvisualInspectionReport;
+          newvisualInspectionReport = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          VisualInspectionReport.create(newvisualInspectionReport, function (
+            err,
+            visualInspectionReport
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.visualInspectionReport.push(visualInspectionReport);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(visualInspectionReport);
+                }
+              });
+              console.log(" visualInspectionReport Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/visual-inspection-report-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, VisualInspectionReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newVisualInspectionReport;
+
+      newVisualInspectionReport= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      VisualInspectionReport.findByIdAndUpdate(
+        req.params.id,
+        newVisualInspectionReport,
+        function (err, visualInspectionReport) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newVisualInspectionReport);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/visual-inspection-report-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        VisualInspectionReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          visualInspectionReport
+        ) {
+          if (!err) {
+            console.log("Visual  deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { visualInspectionReport: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(visualInspectionReport);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////visualInspectionReport Report HHHHHHRRRRR
+app.get("/api/visual-inspection-report-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  VisualInspectionReport.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, visualInspectionReport) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(visualInspectionReport);
+      }
+    });
+});
+
+app.put("/api/visual-inspection-report-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, visualInspectionReportHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newVisualInspectionReport;
+
+      newVisualInspectionReport = {
+        Status: req.body.Status
+      };
+      VisualInspectionReport.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newVisualInspectionReport
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newVisualInspectionReport);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/visual-inspection-report-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      VisualInspectionReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        visualInspectionReport
+      ) {
+        if (!err) {
+          console.log("visualInspectionReport Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { visualInspectionReport: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(visualInspectionReport);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+
+/////////////////////
+//////////          elInspectionReport  Employee  
+app.get("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "elInspectionReport"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, ElInspectionReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newElInspectionReport;
+          newElInspectionReport = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          ElInspectionReport.create(newElInspectionReport, function (
+            err,
+            elInspectionReport
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.elInspectionReport.push(elInspectionReport);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(elInspectionReport);
+                }
+              });
+              console.log("elInspectionReport Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, ElInspectionReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newElInspectionReport ;
+
+      newElInspectionReport= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      ElInspectionReport.findByIdAndUpdate(
+        req.params.id,
+        newelInspectionReport,
+        function (err,elInspectionReport) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newelInspectionReport);
+          }
+        }
+      );
+    }
+    console.log("put elInspectionReport updated");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/el-inspection-report-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        ElInspectionReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          elInspectionReport
+        ) {
+          if (!err) {
+            console.log("elInspectionReport Report deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { elInspectionReport: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(elInspectionReport);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////el-inspection-report HHHHHHRRRRR
+app.get("/api/el-inspection-report-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  ElInspectionReport.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, elInspectionReport) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(elInspectionReport);
+      }
+    });
+});
+
+app.put("/api/el-inspection-report-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, ElInspectionReportHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newElInspectionReport;
+
+      newElInspectionReport = {
+        Status: req.body.Status
+      };
+      ElInspectionReport.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newElInspectionReport
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newElInspectionReport);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/el-inspection-report-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      ElInspectionReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        elInspectionReport
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { elInspectionReport: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(elInspectionReport);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+/////////////////////
+////////////___    manualThermographyReport Employee  
+app.get("/api/manual-thermography-report-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "manualThermographyReport"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/manual-thermography-report-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, ManualThermographyReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newmanualThermographyReport;
+          newmanualThermographyReport = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          ManualThermographyReport.create(newmanualThermographyReport, function (
+            err,
+            manualThermographyReport
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.manualThermographyReport.push(manualThermographyReport);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(manualThermographyReport);
+                }
+              });
+              console.log("manualThermographyReport Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/manual-thermography-report-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, ManualThermographyReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newManualThermographyReport;
+
+      newManualThermographyReport= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      ManualThermographyReport.findByIdAndUpdate(
+        req.params.id,
+        newManualThermographyReport,
+        function (err, manualThermographyReport) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newManualThermographyReport);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/manual-thermography-report-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        ManualThermographyReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          manualThermographyReport
+        ) {
+          if (!err) {
+            console.log("manualThermographyReport deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { manualThermographyReport: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(manualThermographyReport);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////manual-thermography-report HHHHHHRRRRR
+app.get("/api/manual-thermography-report-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  ManualThermographyReport.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, manualThermographyReport) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(manualThermographyReport);
+      }
+    });
+});
+
+app.put("/api/manual-thermography-report-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, ManualThermographyReportHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newManualThermographyReport;
+
+      newManualThermographyReport = {
+        Status: req.body.Status
+      };
+      ManualThermographyReport.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newManualThermographyReport
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newManualThermographyReport);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/manual-thermography-report-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      ManualThermographyReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        manualThermographyReport
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { manualThermographyReport: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(manualThermographyReport);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+/////////////////////
+////////////droneThermographyInspectionReport  Employee  
+app.get("/api/drone-thermography-inspection-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "droneThermographyInspectionReport"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/drone-thermography-inspection-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, DroneThermographyInspectionReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newDroneThermographyInspectionReport;
+          newDroneThermographyInspectionReport = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          DroneThermographyInspectionReport.create(newDroneThermographyInspectionReport, function (
+            err,
+            droneThermographyInspectionReport
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.droneThermographyInspectionReport.push(droneThermographyInspectionReport);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(droneThermographyInspectionReport);
+                }
+              });
+              console.log("droneThermographyInspectionReport Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/drone-thermography-inspection-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, droneThermographyInspectionReportValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newDroneThermographyInspectionReport;
+
+      newDroneThermographyInspectionReport= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      DroneThermographyInspectionReport.findByIdAndUpdate(
+        req.params.id,
+        newDroneThermographyInspectionReport,
+        function (err, droneThermographyInspectionReport) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newDroneThermographyInspectionReport);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/drone-thermography-inspection-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        DroneThermographyInspectionReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          droneThermographyInspectionReport
+        ) {
+          if (!err) {
+            console.log("droneThermographyInspectionReport deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { droneThermographyInspectionReport: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(droneThermographyInspectionReport);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////droneThermographyInspectionReport HHHHHHRRRRR
+app.get("/api/drone-thermography-inspection-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  DroneThermographyInspectionReport.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, droneThermographyInspectionReport) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(droneThermographyInspectionReport);
+      }
+    });
+});
+
+app.put("/api/drone-thermography-inspection-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, DroneThermographyInspectionReportHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newDroneThermographyInspectionReport;
+
+      newDroneThermographyInspectionReport = {
+        Status: req.body.Status
+      };
+      DroneThermographyInspectionReport.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newDroneThermographyInspectionReport
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newDroneThermographyInspectionReport);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/drone-thermography-inspection-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      DroneThermographyInspectionReport.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        droneThermographyInspectionReport
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { droneThermographyInspectionReport: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(droneThermographyInspectionReport);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+
+
+
+
 
 //////////////////////////////////
 /////////////////////login
