@@ -82,7 +82,7 @@ var employeeSchema = new mongoose.Schema({
   manualThermographyReport:[{type:mongoose.Schema.Types.ObjectId, ref: "ManualThermographyReport"}],
   droneThermographyInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "DroneThermographyInspectionReport"}],
   ivCurveAnalysis:[{type:mongoose.Schema.Types.ObjectId, ref: "IvCurveAnalysis"}],
-  factoryInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "FactoryInspectionReport"}],
+  factoryInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "FactoryInspection"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
