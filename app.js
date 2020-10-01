@@ -83,6 +83,7 @@ var employeeSchema = new mongoose.Schema({
   droneThermographyInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "DroneThermographyInspectionReport"}],
   ivCurveAnalysis:[{type:mongoose.Schema.Types.ObjectId, ref: "IvCurveAnalysis"}],
   factoryInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "FactoryInspection"}],
+  preDispatchInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "PreDispatchInspection"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
@@ -634,6 +635,48 @@ var IrTest = mongoose.model(
 );
 
 const IrTestValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
+
+PreDispatchInspection
+////////////PreDispatchInspection Schema
+var preDispatchInspectionSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+preDispatchInspectionSchema.plugin(autoIncrement.plugin, {
+  model: "preDispatchInspection",
+  field: "PreDispatchInspectionID"
+});
+
+var PreDispatchInspection = mongoose.model(
+  "PreDispatchInspection",
+  preDispatchInspectionSchema
+);
+
+const PreDispatchInspectionValidation = Joi.object().keys({
   OANumber: Joi.string()
     .max(100)
     .required(),
@@ -4155,6 +4198,239 @@ app.delete("/api/ir-test-hr/:id/:id2", verifyHR, (req, res) => {
             function (err, numberAffected) {
               console.log(numberAffected);
               res.send(irTest);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+
+/////////////////////
+////////////preDispatchInspection  Employee  
+app.get("/api/pre-dispatch-inspection-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "preDispatchInspection"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/pre-dispatch-inspection-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, PreDispatchInspectionValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newPreDispatchInspection;
+          newPreDispatchInspection = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          PreDispatchInspection.create(newPreDispatchInspection, function (
+            err,
+            preDispatchInspection
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.preDispatchInspection.push(preDispatchInspection);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(preDispatchInspection);
+                }
+              });
+              console.log("preDispatchInspection Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/pre-dispatch-inspection-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, PreDispatchInspectiontValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newPreDispatchInspection;
+
+      newPreDispatchInspection= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      PreDispatchInspection.findByIdAndUpdate(
+        req.params.id,
+        newPreDispatchInspection,
+        function (err, preDispatchInspection) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newPreDispatchInspection);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/pre-dispatch-inspection-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        PreDispatchInspection.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          preDispatchInspection
+        ) {
+          if (!err) {
+            console.log("preDispatchInspection Report deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { preDispatchInspection: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(preDispatchInspection);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////pre-dispatch-inspection Report HHHHHHRRRRR
+app.get("/api/pre-dispatch-inspection-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  PreDispatchInspection.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, preDispatchInspection) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(preDispatchInspection);
+      }
+    });
+});
+
+app.put("/api/pre-dispatch-inspection-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, PreDispatchInspectionHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newPreDispatchInspection;
+
+      newPreDispatchInspection = {
+        Status: req.body.Status
+      };
+      PreDispatchInspection.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newPreDispatchInspection
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newPreDispatchInspection);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/pre-dispatch-inspection-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      PreDispatchInspection.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        preDispatchInspection
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { preDispatchInspection: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(preDispatchInspection);
             }
           );
         } else {
