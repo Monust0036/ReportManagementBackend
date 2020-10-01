@@ -697,6 +697,46 @@ const FactoryInspectionValidation = Joi.object().keys({
 
 
 
+////////////ivCurveAnalysis Schema
+var ivCurveAnalysisSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+ivCurveAnalysisSchema.plugin(autoIncrement.plugin, {
+  model: "ivCurveAnalysis",
+  field: "IvCurveAnalysisID"
+});
+
+var IvCurveAnalysis = mongoose.model(
+  "IvCurveAnalysis",
+  ivCurveAnalysisSchema
+);
+
+const IvCurveAnalysisValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
 
 ////////////manualThermographyReport Schema
 var manualThermographyReportSchema = new mongoose.Schema({
@@ -4576,7 +4616,7 @@ app.delete("/api/factory-inspection-hr/:id/:id2", verifyHR, (req, res) => {
         factoryInspection
       ) {
         if (!err) {
-          console.log("Ir Test Report deleted");
+          console.log("Factory Report deleted");
           Employee.update(
             { _id: req.params.id },
             { $pull: { factoryInspection: req.params.id2 } },
@@ -5063,7 +5103,7 @@ app.delete("/api/el-inspection-report-hr/:id/:id2", verifyHR, (req, res) => {
 });
 
 /////////////////////
-////////////___    manualThermographyReport Employee  
+//////////////    manualThermographyReport Employee  
 app.get("/api/manual-thermography-report-emp/:id", verifyEmployee, (req, res) => {
   console.log(req.params.id);
   // var employee = {};
