@@ -81,6 +81,8 @@ var employeeSchema = new mongoose.Schema({
   elInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "ElInspectionReport"}],
   manualThermographyReport:[{type:mongoose.Schema.Types.ObjectId, ref: "ManualThermographyReport"}],
   droneThermographyInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "DroneThermographyInspectionReport"}],
+  ivCurveAnalysis:[{type:mongoose.Schema.Types.ObjectId, ref: "IvCurveAnalysis"}],
+  factoryInspectionReport:[{type:mongoose.Schema.Types.ObjectId, ref: "FactoryInspectionReport"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
@@ -651,6 +653,48 @@ const IrTestValidation = Joi.object().keys({
     .required(),
   
 });
+
+////////////Factory Inspection Schema
+var factoryInspectionSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+factoryInspectionSchema.plugin(autoIncrement.plugin, {
+  model: "factoryInspection",
+  field: "FactoryInspectionID"
+});
+
+var FactoryInspection = mongoose.model(
+  "FactoryInspection",
+  factoryInspectionSchema
+);
+
+const FactoryInspectionValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
+
 
 
 
@@ -4071,6 +4115,474 @@ app.delete("/api/ir-test-hr/:id/:id2", verifyHR, (req, res) => {
             function (err, numberAffected) {
               console.log(numberAffected);
               res.send(irTest);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+
+
+
+
+/////////////////////
+//////////// IvCurveAnalysis Report  Employee  
+app.get("/api/iv-curve-analysis-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "ivCurveAnalysis"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/iv-curve-analysis-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, IvCurveAnalysisValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newIvCurveAnalysis;
+          newIvCurveAnalysis = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          IvCurveAnalysis.create(newIvCurveAnalysis, function (
+            err,
+            ivCurveAnalysis
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.ivCurveAnalysis.push(ivCurveAnalysis);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(ivCurveAnalysis);
+                }
+              });
+              console.log("IV Curve Analysis Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/iv-curve-analysis-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, IvCurveAnalysisValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newIvCurveAnalysis;
+
+      newIvCurveAnalysis= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      IvCurveAnalysis.findByIdAndUpdate(
+        req.params.id,
+        newIvCurveAnalysis,
+        function (err, ivCurveAnalysis) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newIvCurveAnalysis);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/iv-curve-analysis-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        IvCurveAnalysis.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          ivCurveAnalysis
+        ) {
+          if (!err) {
+            console.log("Iv Curve Analysis Report deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { ivCurveAnalysis: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(ivCurveAnalysis);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+//////////// iv-curve-analysis Report HHHHHHRRRRR
+app.get("/api/iv-curve-analysis-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  IvCurveAnalysis.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, ivCurveAnalysis) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(ivCurveAnalysis);
+      }
+    });
+});
+
+app.put("/api/iv-curve-analysis-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, IvCurveAnalysisHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newIvCurveAnalysis;
+
+      newIvCurveAnalysis = {
+        Status: req.body.Status
+      };
+      IvCurveAnalysis.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newIvCurveAnalysis
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newIvCurveAnalysis);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/iv-curve-analysis-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      IvCurveAnalysis.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        ivCurveAnalysis
+      ) {
+        if (!err) {
+          console.log("IvCurveAnalysis deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { ivCurveAnalysis: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(ivCurveAnalysis);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
+
+/////////////////////
+//////////// Factory Inspection Report Employee  
+app.get("/api/factory-inspection-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "factoryInspection"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/factory-inspection-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, FactoryInspectionValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newFactoryInspection;
+          newFactoryInspection = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          FactoryInspection.create(newFactoryInspection, function (
+            err,
+            factoryInspection
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.factoryInspection.push(factoryInspection);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(factoryInspection);
+                }
+              });
+              console.log("FactoryInspection Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/factory-inspection-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, FactoryInspectionValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newFactoryInspection;
+
+      newFactoryInspection= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      FactoryInspection.findByIdAndUpdate(
+        req.params.id,
+        newFactoryInspection,
+        function (err, factoryInspection) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newFactoryInspection);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/factory-inspection-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        FactoryInspection.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          factoryInspection
+        ) {
+          if (!err) {
+            console.log("Ir Test Report deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { factoryInspection: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(factoryInspection);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+////////////Factory Inspection Report HHHHHHRRRRR
+app.get("/api/factory-inspectiont-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  FactoryInspection.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, factoryInspection) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(factoryInspection);
+      }
+    });
+});
+
+app.put("/api/factory-inspection-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, FactoryInspectionHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newFactoryInspection;
+
+      newFactoryInspection = {
+        Status: req.body.Status
+      };
+      FactoryInspection.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newFactoryInspection
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newFactoryInspection);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/factory-inspection-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      FactoryInspection.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        factoryInspection
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { factoryInspection: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(factoryInspection);
             }
           );
         } else {
