@@ -84,6 +84,7 @@ var employeeSchema = new mongoose.Schema({
   ivCurveAnalysis:[{type:mongoose.Schema.Types.ObjectId, ref: "IvCurveAnalysis"}],
   factoryInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "FactoryInspection"}],
   preDispatchInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "PreDispatchInspection"}],
+  labTesting:[{type:mongoose.Schema.Types.ObjectId, ref: "labTesting"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
@@ -655,7 +656,46 @@ const IrTestValidation = Joi.object().keys({
   
 });
 
-PreDispatchInspection
+////////////Lab Testing Schema
+var labTestingSchema = new mongoose.Schema({
+  OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
+  State: { type: String, required: true },
+  CustomerName: { type: String, required: true },
+  SiteName: { type: String, required: true },
+  ReportedBy: { type: String, required: true },
+  employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
+});
+labTestingSchema.plugin(autoIncrement.plugin, {
+  model: "labTesting",
+  field: "LabTestingID"
+});
+
+var LabTesting = mongoose.model(
+  "LabTesting",
+  labTestingSchema
+);
+
+const LabTestingValidation = Joi.object().keys({
+  OANumber: Joi.string()
+    .max(100)
+    .required(),
+  Date: Joi.date().required(),
+  State: Joi.string()
+    .max(100)
+    .required(),
+  CustomerName: Joi.string()
+    .max(100)
+    .required(),
+
+  SiteName: Joi.string()
+    .max(100)
+    .required(),
+  ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  
+});
 ////////////PreDispatchInspection Schema
 var preDispatchInspectionSchema = new mongoose.Schema({
   OANumber: { type: String, required: true },
@@ -4211,6 +4251,238 @@ app.delete("/api/ir-test-hr/:id/:id2", verifyHR, (req, res) => {
   });
 });
 
+
+/////////////////////
+//////////// Lab Testing Report  Employee  
+app.get("/api/lab-testing-emp/:id", verifyEmployee, (req, res) => {
+  console.log(req.params.id);
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  Employee.findById(req.params.id)
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "labTesting"
+      // populate: {
+      //   path: "state",
+      //   model: "State",
+      //   populate: {
+      //     path: "country",
+      //     model: "Country"
+      //   }
+      // }
+    })
+    // .select(" -role -position -department")
+    .select("CustomerName SiteName ReportedBy")
+    .exec(function (err, employee) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(employee);
+      }
+    });
+});
+
+app.post("/api/lab-testing-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, LabTestingValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      Employee.findById(req.params.id, function (err, employee) {
+        if (err) {
+          console.log(err);
+          res.send("err");
+        } else {
+          let newLabTesting;
+          newLabTesting = {
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+
+          };
+
+          LabTesting.create(newLabTesting, function (
+            err,
+            labTesting
+          ) {
+            if (err) {
+              console.log(err);
+              res.send("error");
+            } else {
+              employee.labTesting.push(labTesting);
+              employee.save(function (err, data) {
+                if (err) {
+                  console.log(err);
+                  res.send("err");
+                } else {
+                  console.log(data);
+                  res.send(labTesting);
+                }
+              });
+              console.log("labTesting Report Saved");
+            }
+          });
+          console.log(req.body);
+        }
+      });
+    }
+  });
+});
+
+app.put("/api/lab-testing-emp/:id", verifyEmployee, (req, res) => {
+  Joi.validate(req.body, LabTestingValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newLabTesting;
+
+      newLabTesting= {
+        
+            Date: req.body.Date,
+            OANumber: req.body.OANumber,
+            State:req.body.State,
+            CustomerName: req.body.CustomerName,
+            SiteName: req.body.SiteName,
+            ReportedBy:req.body.ReportedBy,
+            employee: req.params.id
+      };
+
+      LabTesting.findByIdAndUpdate(
+        req.params.id,
+        newLabTesting,
+        function (err, labTesting) {
+          if (err) {
+            res.send("error");
+          } else {
+            res.send(newLabTesting);
+          }
+        }
+      );
+    }
+    console.log("put");
+    console.log(req.body);
+  });
+});
+
+app.delete("/api/lab-testing-emp/:id/:id2",verifyEmployee,(req, res) => {
+    Employee.findById({ _id: req.params.id }, function (err, employee) {
+      if (err) {
+        res.send("error");
+        console.log(err);
+      } else {
+        LabTesting.findByIdAndRemove({ _id: req.params.id2 }, function (
+          err,
+          labTesting
+        ) {
+          if (!err) {
+            console.log("Ir Test Report deleted");
+            Employee.update(
+              { _id: req.params.id },
+              { $pull: { labTesting: req.params.id2 } },
+              function (err, numberAffected) {
+                console.log(numberAffected);
+                res.send(labTesting);
+              }
+            );
+          } else {
+            console.log(err);
+            res.send("error");
+          }
+        });
+        console.log("delete");
+        console.log(req.params.id);
+      }
+    });
+  }
+);
+/////////////////////
+//////////// lab-testing Report HHHHHHRRRRR
+app.get("/api/lab-testing-hr", verifyHR, (req, res) => {
+  // var employee = {};
+  // {path: 'projects', populate: {path: 'portals'}}
+  LabTesting.find()
+    // .populate({ path: "city", populate: { path: "state" } ,populate: { populate: { path: "country" } } })
+    .populate({
+      path: "employee"
+    })
+    // .select(" -role -position -department")
+    // .select("FirstName LastName MiddleName"
+    // )
+    .exec(function (err, labTesting) {
+      // console.log(filteredCompany);
+      if (err) {
+        console.log(err);
+        res.send("error");
+      } else {
+        res.send(labTesting);
+      }
+    });
+});
+
+app.put("/api/lab-testing-hr/:id", verifyHR, (req, res) => {
+  Joi.validate(req.body, LabTestingHRValidation, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send(err.details[0].message);
+    } else {
+      let newLabTesting;
+
+      newLabTesting = {
+        Status: req.body.Status
+      };
+      LabTesting.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: newLabTesting
+        },
+        function (err, numberAffected) {
+          console.log(numberAffected);
+          res.send(newLabTesting);
+        }
+      );
+
+      console.log(req.body);
+    }
+  });
+});
+
+app.delete("/api/lab-testing-hr/:id/:id2", verifyHR, (req, res) => {
+  Employee.findById({ _id: req.params.id }, function (err, employee) {
+    if (err) {
+      res.send("error");
+      console.log(err);
+    } else {
+      LabTesting.findByIdAndRemove({ _id: req.params.id2 }, function (
+        err,
+        labTesting
+      ) {
+        if (!err) {
+          console.log("Ir Test Report deleted");
+          Employee.update(
+            { _id: req.params.id },
+            { $pull: { labTesting: req.params.id2 } },
+            function (err, numberAffected) {
+              console.log(numberAffected);
+              res.send(labTesting);
+            }
+          );
+        } else {
+          console.log(err);
+          res.send("error");
+        }
+      });
+      console.log("delete");
+      console.log(req.params.id);
+    }
+  });
+});
 
 /////////////////////
 ////////////preDispatchInspection  Employee  
