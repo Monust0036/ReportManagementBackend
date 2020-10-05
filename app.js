@@ -84,7 +84,7 @@ var employeeSchema = new mongoose.Schema({
   ivCurveAnalysis:[{type:mongoose.Schema.Types.ObjectId, ref: "IvCurveAnalysis"}],
   factoryInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "FactoryInspection"}],
   preDispatchInspection:[{type:mongoose.Schema.Types.ObjectId, ref: "PreDispatchInspection"}],
-  labTesting:[{type:mongoose.Schema.Types.ObjectId, ref: "labTesting"}],
+  labTesting:[{type:mongoose.Schema.Types.ObjectId, ref: "LabTesting"}],
   empAttendance:[{type:mongoose.Schema.Types.ObjectId, ref: "EmpAttendance"}],
 
   BloodGroup: { type: String },
@@ -531,6 +531,8 @@ const JbChangeVocValidation = Joi.object().keys({
     .max(100)
     .required()
 });
+
+
 ////////////ElInspectionReport Schema
 var elInspectionReportSchema = new mongoose.Schema({
   OANumber: { type: String, required: true },
@@ -539,6 +541,21 @@ var elInspectionReportSchema = new mongoose.Schema({
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
+  SiteOwnerClient:{ type: String, required: true },
+  Commissioning:{ type: Date, required: true },
+  MWCapacityAC:{ type: String, required: true },
+  MWCapacityDC:{ type: String, required: true },
+  ModuleMake1:{ type: String, required: true },
+  ModuleMake2:{ type: String, required: true },
+  InstalledCapacityMW1:{ type: String, required: true },
+  InstalledCapacityMW2:{ type: String, required: true },
+  GroundMounted:{ type: String, required: true },
+  InstallationAngle:{ type: String, required: true },
+  Orientation:{ type: String, required: true },
+  ModulesIn1Column:{ type: String, required: true },
+  ModulesIn1String: { type: String, required: true },
+  Tracker:{ type: String, required: true },
+
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
 elInspectionReportSchema.plugin(autoIncrement.plugin, {
@@ -569,6 +586,48 @@ const ElInspectionReportValidation = Joi.object().keys({
   ReportedBy: Joi.string()
     .max(100)
     .required(),
+
+  SiteOwnerClient: Joi.string()
+    .max(100)
+    .required(),
+  Commissioning: Joi.date().required(),
+  MWCapacityAC: Joi.string()
+    .max(100)
+    .required(),
+  MWCapacityDC: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake1: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake2: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW1: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW2: Joi.string()
+    .max(100)
+    .required(),
+  GroundMounted: Joi.string()
+    .max(100)
+    .required(),
+  InstallationAngle: Joi.string()
+    .max(100)
+    .required(),
+  Orientation: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1Column: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1String: Joi.string()
+    .max(100)
+    .required(),
+  Tracker: Joi.string()
+    .max(100)
+    .required(),
+
   
 });
 
@@ -5469,6 +5528,21 @@ app.post("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
+            SiteOwnerClient:req.body.SiteOwnerClient,
+            Commissioning:req.body.Commissioning,
+            MWCapacityAC:req.body.MWCapacityAC,
+            MWCapacityDC:req.body.MWCapacityDC,
+            ModuleMake1:req.body.ModuleMake1,
+            ModuleMake2:req.body.ModuleMake2,
+            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            GroundMounted:req.body.GroundMounted,
+            InstallationAngle:req.body.InstallationAngle,
+            Orientation:req.body.Orientation,
+            ModulesIn1Column:req.body.ModulesIn1Column,
+            ModulesIn1String: req.body.ModulesIn1String,
+            Tracker:req.body.Tracker,
+
             employee: req.params.id
 
           };
@@ -5517,6 +5591,21 @@ app.put("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
+            SiteOwnerClient:req.body.SiteOwnerClient,
+            Commissioning:req.body.Commissioning,
+            MWCapacityAC:req.body.MWCapacityAC,
+            MWCapacityDC:req.body.MWCapacityDC,
+            ModuleMake1:req.body.ModuleMake1,
+            ModuleMake2:req.body.ModuleMake2,
+            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            GroundMounted:req.body.GroundMounted,
+            InstallationAngle:req.body.InstallationAngle,
+            Orientation:req.body.Orientation,
+            ModulesIn1Column:req.body.ModulesIn1Column,
+            ModulesIn1String: req.body.ModulesIn1String,
+            Tracker:req.body.Tracker,
+
             employee: req.params.id
       };
 
