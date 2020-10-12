@@ -535,26 +535,27 @@ const JbChangeVocValidation = Joi.object().keys({
 
 ////////////ElInspectionReport Schema
 var elInspectionReportSchema = new mongoose.Schema({
-  OANumber: { type: String, required: true },
+  
   Date: { type: Date, required: true },
+  OANumber: { type: String, required: true },
   State: { type: String, required: true },
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
   SiteOwnerClient:{ type: String, required: true },
-  Commissioning:{ type: Date, required: true },
+  Commissioning:{ type: String, required: true },
   MWCapacityAC:{ type: String, required: true },
   MWCapacityDC:{ type: String, required: true },
-  ModuleMake1:{ type: String, required: true },
-  ModuleMake2:{ type: String, required: true },
-  InstalledCapacityMW1:{ type: String, required: true },
-  InstalledCapacityMW2:{ type: String, required: true },
-  GroundMounted:{ type: String, required: true },
-  InstallationAngle:{ type: String, required: true },
-  Orientation:{ type: String, required: true },
-  ModulesIn1Column:{ type: String, required: true },
-  ModulesIn1String: { type: String, required: true },
-  Tracker:{ type: String, required: true },
+  // ModuleMake1:{ type: String, required: true },
+  // ModuleMake2:{ type: String, required: true },
+  // InstalledCapacityMW1:{ type: String, required: true },
+  // InstalledCapacityMW2:{ type: String, required: true },
+  // GroundMounted:{ type: String, required: true },
+  // InstallationAngle:{ type: String, required: true },
+  // Orientation:{ type: String, required: true },
+  // ModulesIn1Column:{ type: String, required: true },
+  // ModulesIn1String: { type: String, required: true },
+  // Tracker:{ type: String, required: true },
 
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
@@ -569,10 +570,12 @@ var ElInspectionReport = mongoose.model(
 );
 
 const ElInspectionReportValidation = Joi.object().keys({
+  
+  Date: Joi.date().required(),
   OANumber: Joi.string()
     .max(100)
     .required(),
-  Date: Joi.date().required(),
+  
   State: Joi.string()
     .max(100)
     .required(),
@@ -590,43 +593,47 @@ const ElInspectionReportValidation = Joi.object().keys({
   SiteOwnerClient: Joi.string()
     .max(100)
     .required(),
-  Commissioning: Joi.date().required(),
+
+  Commissioning: Joi.string()
+  .max(100)
+  .required(),
+
   MWCapacityAC: Joi.string()
     .max(100)
     .required(),
   MWCapacityDC: Joi.string()
     .max(100)
     .required(),
-  ModuleMake1: Joi.string()
-    .max(100)
-    .required(),
-  ModuleMake2: Joi.string()
-    .max(100)
-    .required(),
-  InstalledCapacityMW1: Joi.string()
-    .max(100)
-    .required(),
-  InstalledCapacityMW2: Joi.string()
-    .max(100)
-    .required(),
-  GroundMounted: Joi.string()
-    .max(100)
-    .required(),
-  InstallationAngle: Joi.string()
-    .max(100)
-    .required(),
-  Orientation: Joi.string()
-    .max(100)
-    .required(),
-  ModulesIn1Column: Joi.string()
-    .max(100)
-    .required(),
-  ModulesIn1String: Joi.string()
-    .max(100)
-    .required(),
-  Tracker: Joi.string()
-    .max(100)
-    .required(),
+  // ModuleMake1: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // ModuleMake2: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // InstalledCapacityMW1: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // InstalledCapacityMW2: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // GroundMounted: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // InstallationAngle: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // Orientation: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // ModulesIn1Column: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // ModulesIn1String: Joi.string()
+  //   .max(100)
+  //   .required(),
+  // Tracker: Joi.string()
+  //   .max(100)
+  //   .required()
 
   
 });
@@ -682,6 +689,21 @@ var irTestSchema = new mongoose.Schema({
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
+  SiteOwnerClient: { type: String, required: true },
+  Commissioning: { type: String, required: true },
+  MWCapacityAC: { type: String, required: true },
+  MWCapacityDC: { type: String, required: true },
+  ModuleMake1:{ type: String, required: true },
+  ModuleMake2:{ type: String, required: true },
+  InstalledCapacityMW1:{ type: String, required: true },
+  InstalledCapacityMW2:{ type: String, required: true },
+  GroundMounted:{ type: String, required: true },
+  InstallationAngle:{ type: String, required: true },
+  Orientation:{ type: String, required: true },
+  ModulesIn1Column:{ type: String, required: true },
+  ModulesIn1String: { type: String, required: true },
+  Tracker:{ type: String, required: true },
+
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
 irTestSchema.plugin(autoIncrement.plugin, {
@@ -710,6 +732,48 @@ const IrTestValidation = Joi.object().keys({
     .max(100)
     .required(),
   ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  SiteOwnerClient: Joi.string()
+    .max(100)
+    .required(),
+  Commissioning: Joi.string()
+    .max(100)
+    .required(),
+  MWCapacityAC: Joi.string()
+    .max(100)
+    .required(),
+  MWCapacityDC: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake1: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake2: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW1: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW2: Joi.string()
+    .max(100)
+    .required(),
+  GroundMounted: Joi.string()
+    .max(100)
+    .required(),
+  InstallationAngle: Joi.string()
+    .max(100)
+    .required(),
+  Orientation: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1Column: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1String: Joi.string()
+    .max(100)
+    .required(),
+  Tracker: Joi.string()
     .max(100)
     .required(),
   
@@ -4129,6 +4193,20 @@ app.post("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
+            SiteOwnerClient:req.body.SiteOwnerClient,
+            Commissioning:req.body.Commissioning,
+            MWCapacityAC:req.body.MWCapacityAC,
+            MWCapacityDC:req.body.MWCapacityDC,
+            ModuleMake1:req.body.ModuleMake1,
+            ModuleMake2:req.body.ModuleMake2,
+            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            GroundMounted:req.body.GroundMounted,
+            InstallationAngle:req.body.InstallationAngle,
+            Orientation:req.body.Orientation,
+            ModulesIn1Column:req.body.ModulesIn1Column,
+            ModulesIn1String: req.body.ModulesIn1String,
+            Tracker:req.body.Tracker,
             employee: req.params.id
 
           };
@@ -4441,7 +4519,7 @@ app.delete("/api/lab-testing-emp/:id/:id2",verifyEmployee,(req, res) => {
           labTesting
         ) {
           if (!err) {
-            console.log("Ir Test Report deleted");
+            console.log("Lab testing Report deleted");
             Employee.update(
               { _id: req.params.id },
               { $pull: { labTesting: req.params.id2 } },
@@ -4523,7 +4601,7 @@ app.delete("/api/lab-testing-hr/:id/:id2", verifyHR, (req, res) => {
         labTesting
       ) {
         if (!err) {
-          console.log("Ir Test Report deleted");
+          console.log("Lab testing Report deleted");
           Employee.update(
             { _id: req.params.id },
             { $pull: { labTesting: req.params.id2 } },
@@ -5512,7 +5590,8 @@ app.get("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
 app.post("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
   Joi.validate(req.body, ElInspectionReportValidation, (err, result) => {
     if (err) {
-      console.log(err);
+      debugger
+      console.log("###################", err);
       res.status(400).send(err.details[0].message);
     } else {
       Employee.findById(req.params.id, function (err, employee) {
@@ -5532,16 +5611,16 @@ app.post("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
             Commissioning:req.body.Commissioning,
             MWCapacityAC:req.body.MWCapacityAC,
             MWCapacityDC:req.body.MWCapacityDC,
-            ModuleMake1:req.body.ModuleMake1,
-            ModuleMake2:req.body.ModuleMake2,
-            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
-            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
-            GroundMounted:req.body.GroundMounted,
-            InstallationAngle:req.body.InstallationAngle,
-            Orientation:req.body.Orientation,
-            ModulesIn1Column:req.body.ModulesIn1Column,
-            ModulesIn1String: req.body.ModulesIn1String,
-            Tracker:req.body.Tracker,
+            // ModuleMake1:req.body.ModuleMake1,
+            // ModuleMake2:req.body.ModuleMake2,
+            // InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            // InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            // GroundMounted:req.body.GroundMounted,
+            // InstallationAngle:req.body.InstallationAngle,
+            // Orientation:req.body.Orientation,
+            // ModulesIn1Column:req.body.ModulesIn1Column,
+            // ModulesIn1String: req.body.ModulesIn1String,
+            // Tracker:req.body.Tracker
 
             employee: req.params.id
 
@@ -5581,7 +5660,7 @@ app.put("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
       console.log(err);
       res.status(400).send(err.details[0].message);
     } else {
-      let newElInspectionReport ;
+      let newElInspectionReport;
 
       newElInspectionReport= {
         
