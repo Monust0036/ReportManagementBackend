@@ -690,7 +690,7 @@ var irTestSchema = new mongoose.Schema({
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
   SiteOwnerClient: { type: String, required: true },
-  Commissioning: { type: String, required: true },
+  Commissioning: { type: Date, required: true },
   MWCapacityAC: { type: String, required: true },
   MWCapacityDC: { type: String, required: true },
   ModuleMake1:{ type: String, required: true },
@@ -753,9 +753,7 @@ const IrTestValidation = Joi.object().keys({
   SiteOwnerClient: Joi.string()
     .max(100)
     .required(),
-  Commissioning: Joi.string()
-    .max(100)
-    .required(),
+  Commissioning: Joi.date().required(),
   MWCapacityAC: Joi.string()
     .max(100)
     .required(),
@@ -4363,7 +4361,7 @@ app.put("/api/ir-test-emp/:id", verifyEmployee, (req, res) => {
             CheckingTogether:req.body.CheckingTogether,
             SiteRepresentative:req.body.SiteRepresentative,
             // Status: req.body.Status,
-            employee: req.params.id
+            // employee: req.params.id
       };
 
       IrTest.findByIdAndUpdate(
