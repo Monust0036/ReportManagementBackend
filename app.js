@@ -1081,6 +1081,35 @@ var ivCurveAnalysisSchema = new mongoose.Schema({
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
+  SiteOwnerClient: { type: String, required: true },
+  Commissioning: { type: Date, required: true },
+  MWCapacityAC: { type: String, required: true },
+  MWCapacityDC: { type: String, required: true },
+  ModuleMake1:{ type: String, required: true },
+  ModuleMake2:{ type: String, required: true },
+  InstalledCapacityMW1:{ type: String, required: true },
+  InstalledCapacityMW2:{ type: String, required: true },
+  GroundMounted:{ type: String, required: true },
+  InstallationAngle:{ type: String, required: true },
+  Orientation:{ type: String, required: true },
+  ModulesIn1Column:{ type: String, required: true },
+  ModulesIn1String: { type: String, required: true },
+  Tracker:{ type: String, required: true },
+  // inspection result
+  InspectionCompleted: { type: String, required: true },
+  InstrumentSerialNo: { type: String, required: true },
+  InspectionInstrument: { type: String, required: true },
+  Calibrationvalidity: { type: String, required: true },
+  // NoOfNonRepairable: { type: String, required: true },
+  // observation form 
+  Observation1: { type: String, required: true },
+  Observation2: { type: String, required: true },
+  Observation3: { type: String, required: true },
+  Observation4: { type: String, required: true },
+  InspectionDoneBy: { type: String, required: true },
+  InspectionReviewedBy: { type: String, required: true },
+  CheckingTogether: { type: String, required: true },
+  SiteRepresentative: { type: String, required: true },
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
 ivCurveAnalysisSchema.plugin(autoIncrement.plugin, {
@@ -1111,7 +1140,88 @@ const IvCurveAnalysisValidation = Joi.object().keys({
   ReportedBy: Joi.string()
     .max(100)
     .required(),
-  
+  SiteOwnerClient: Joi.string()
+    .max(100)
+    .required(),
+  Commissioning: Joi.date().required(),
+  MWCapacityAC: Joi.string()
+    .max(100)
+    .required(),
+  MWCapacityDC: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake1: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake2: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW1: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW2: Joi.string()
+    .max(100)
+    .required(),
+  GroundMounted: Joi.string()
+    .max(100)
+    .required(),
+  InstallationAngle: Joi.string()
+    .max(100)
+    .required(),
+  Orientation: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1Column: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1String: Joi.string()
+    .max(100)
+    .required(),
+  Tracker: Joi.string()
+    .max(100)
+    .required(),
+
+    // inspection result
+    InspectionCompleted: Joi.string()
+    .max(100)
+    .required(),
+    InstrumentSerialNo: Joi.string()
+    .max(100)
+    .required(),
+    InspectionInstrument: Joi.string()
+    .max(100)
+    .required(),
+    Calibrationvalidity: Joi.string()
+    .max(100)
+    .required(),
+    // NoOfNonRepairable: Joi.string()
+    // .max(100)
+    // .required(),
+    // observation form 
+    Observation1: Joi.string()
+    .max(100)
+    .required(),
+    Observation2: Joi.string()
+    .max(100)
+    .required(),
+    Observation3: Joi.string()
+    .max(100)
+    .required(),
+    Observation4: Joi.string()
+    .max(100)
+    .required(),
+    InspectionDoneBy: Joi.string()
+    .max(100)
+    .required(),
+    InspectionReviewedBy: Joi.string()
+    .max(100)
+    .required(),
+    CheckingTogether: Joi.string()
+    .max(100)
+    .required(),
+    SiteRepresentative: Joi.string()
+    .max(100)
+    .required(),
 });
 
 ////////////manualThermographyReport Schema
@@ -5125,6 +5235,37 @@ app.post("/api/iv-curve-analysis-emp/:id", verifyEmployee, (req, res) => {
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
+            SiteOwnerClient:req.body.SiteOwnerClient,
+            Commissioning:req.body.Commissioning,
+            MWCapacityAC:req.body.MWCapacityAC,
+            MWCapacityDC:req.body.MWCapacityDC,
+            ModuleMake1:req.body.ModuleMake1,
+            ModuleMake2:req.body.ModuleMake2,
+            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            GroundMounted:req.body.GroundMounted,
+            InstallationAngle:req.body.InstallationAngle,
+            Orientation:req.body.Orientation,
+            ModulesIn1Column:req.body.ModulesIn1Column,
+            ModulesIn1String: req.body.ModulesIn1String,
+            Tracker:req.body.Tracker,
+            // inspection result
+            InspectionCompleted:req.body.InspectionCompleted,
+            InstrumentSerialNo:req.body.InstrumentSerialNo,
+            InspectionInstrument:req.body.InspectionInstrument,
+            Calibrationvalidity:req.body.Calibrationvalidity,
+            // NoOfNonRepairable:req.body.NoOfNonRepairable,
+            // observation form 
+            Observation1:req.body.Observation1,
+            Observation2:req.body.Observation2,
+            Observation3:req.body.Observation3,
+            Observation4:req.body.Observation4,
+            InspectionDoneBy:req.body.InspectionDoneBy,
+            InspectionReviewedBy:req.body.InspectionReviewedBy,
+            CheckingTogether:req.body.CheckingTogether,
+            SiteRepresentative:req.body.SiteRepresentative,
+            // Status: req.body.Status,
+            
             employee: req.params.id
 
           };
@@ -5167,13 +5308,43 @@ app.put("/api/iv-curve-analysis-emp/:id", verifyEmployee, (req, res) => {
 
       newIvCurveAnalysis= {
         
-            Date: req.body.Date,
-            OANumber: req.body.OANumber,
-            State:req.body.State,
-            CustomerName: req.body.CustomerName,
-            SiteName: req.body.SiteName,
-            ReportedBy:req.body.ReportedBy,
-            employee: req.params.id
+        Date: req.body.Date,
+        OANumber: req.body.OANumber,
+        State:req.body.State,
+        CustomerName: req.body.CustomerName,
+        SiteName: req.body.SiteName,
+        ReportedBy:req.body.ReportedBy,
+        SiteOwnerClient:req.body.SiteOwnerClient,
+        Commissioning:req.body.Commissioning,
+        MWCapacityAC:req.body.MWCapacityAC,
+        MWCapacityDC:req.body.MWCapacityDC,
+        ModuleMake1:req.body.ModuleMake1,
+        ModuleMake2:req.body.ModuleMake2,
+        InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+        InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+        GroundMounted:req.body.GroundMounted,
+        InstallationAngle:req.body.InstallationAngle,
+        Orientation:req.body.Orientation,
+        ModulesIn1Column:req.body.ModulesIn1Column,
+        ModulesIn1String: req.body.ModulesIn1String,
+        Tracker:req.body.Tracker,
+        // inspection result
+        InspectionCompleted:req.body.InspectionCompleted,
+        InstrumentSerialNo:req.body.InstrumentSerialNo,
+        InspectionInstrument:req.body.InspectionInstrument,
+        Calibrationvalidity:req.body.Calibrationvalidity,
+        // observation form 
+        Observation1:req.body.Observation1,
+        Observation2:req.body.Observation2,
+        Observation3:req.body.Observation3,
+        Observation4:req.body.Observation4,
+        InspectionDoneBy:req.body.InspectionDoneBy,
+        InspectionReviewedBy:req.body.InspectionReviewedBy,
+        CheckingTogether:req.body.CheckingTogether,
+        SiteRepresentative:req.body.SiteRepresentative,
+        // Status: req.body.Status,
+        
+        employee: req.params.id
       };
 
       IvCurveAnalysis.findByIdAndUpdate(
@@ -5257,7 +5428,44 @@ app.put("/api/iv-curve-analysis-hr/:id", verifyHR, (req, res) => {
       let newIvCurveAnalysis;
 
       newIvCurveAnalysis = {
-        Status: req.body.Status
+        Date: req.body.Date,
+        Date: req.body.Date,
+        OANumber: req.body.OANumber,
+        State:req.body.State,
+        CustomerName: req.body.CustomerName,
+        SiteName: req.body.SiteName,
+        ReportedBy:req.body.ReportedBy,
+        SiteOwnerClient:req.body.SiteOwnerClient,
+        Commissioning:req.body.Commissioning,
+        MWCapacityAC:req.body.MWCapacityAC,
+        MWCapacityDC:req.body.MWCapacityDC,
+        ModuleMake1:req.body.ModuleMake1,
+        ModuleMake2:req.body.ModuleMake2,
+        InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+        InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+        GroundMounted:req.body.GroundMounted,
+        InstallationAngle:req.body.InstallationAngle,
+        Orientation:req.body.Orientation,
+        ModulesIn1Column:req.body.ModulesIn1Column,
+        ModulesIn1String: req.body.ModulesIn1String,
+        Tracker:req.body.Tracker,
+        // inspection result
+        InspectionCompleted:req.body.InspectionCompleted,
+        InstrumentSerialNo:req.body.InstrumentSerialNo,
+        InspectionInstrument:req.body.InspectionInstrument,
+        Calibrationvalidity:req.body.Calibrationvalidity,
+        // observation form 
+        Observation1:req.body.Observation1,
+        Observation2:req.body.Observation2,
+        Observation3:req.body.Observation3,
+        Observation4:req.body.Observation4,
+        InspectionDoneBy:req.body.InspectionDoneBy,
+        InspectionReviewedBy:req.body.InspectionReviewedBy,
+        CheckingTogether:req.body.CheckingTogether,
+        SiteRepresentative:req.body.SiteRepresentative,
+        // Status: req.body.Status,
+        
+        employee: req.params.id
       };
       IvCurveAnalysis.findByIdAndUpdate(
         req.params.id,
