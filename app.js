@@ -536,26 +536,58 @@ const JbChangeVocValidation = Joi.object().keys({
 ////////////ElInspectionReport Schema
 var elInspectionReportSchema = new mongoose.Schema({
   
-  Date: { type: Date, required: true },
   OANumber: { type: String, required: true },
+  Date: { type: Date, required: true },
   State: { type: String, required: true },
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
-  SiteOwnerClient:{ type: String, required: true },
-  Commissioning:{ type: String, required: true },
-  MWCapacityAC:{ type: String, required: true },
-  MWCapacityDC:{ type: String, required: true },
-  // ModuleMake1:{ type: String, required: true },
-  // ModuleMake2:{ type: String, required: true },
-  // InstalledCapacityMW1:{ type: String, required: true },
-  // InstalledCapacityMW2:{ type: String, required: true },
-  // GroundMounted:{ type: String, required: true },
-  // InstallationAngle:{ type: String, required: true },
-  // Orientation:{ type: String, required: true },
-  // ModulesIn1Column:{ type: String, required: true },
-  // ModulesIn1String: { type: String, required: true },
-  // Tracker:{ type: String, required: true },
+  SiteOwnerClient: { type: String, required: true },
+  Commissioning: { type: Date, required: true },
+  MWCapacityAC: { type: String, required: true },
+  MWCapacityDC: { type: String, required: true },
+  ModuleMake1:{ type: String, required: true },
+  ModuleMake2:{ type: String, required: true },
+  InstalledCapacityMW1:{ type: String, required: true },
+  InstalledCapacityMW2:{ type: String, required: true },
+  GroundMounted:{ type: String, required: true },
+  InstallationAngle:{ type: String, required: true },
+  Orientation:{ type: String, required: true },
+  ModulesIn1Column:{ type: String, required: true },
+  ModulesIn1String: { type: String, required: true },
+  Tracker:{ type: String, required: true },
+  // inspection result
+  AcceptanceValue: { type: String, required: true },
+  NoOfOk: { type: String, required: true },
+  NoOfNotOk: { type: String, required: true },
+  NoOfRepairable: { type: String, required: true },
+  NoOfNonRepairable: { type: String, required: true },
+  // observation form 
+  Observation1: { type: String, required: true },
+  Observation2: { type: String, required: true },
+  Observation3: { type: String, required: true },
+  Observation4: { type: String, required: true },
+  InspectionDoneBy: { type: String, required: true },
+  InspectionReviewedBy: { type: String, required: true },
+  CheckingTogether: { type: String, required: true },
+  SiteRepresentative: { type: String, required: true },
+  // Module details
+  ModuleSerialNo:{ type: String, required: true },
+  TableNo: { type: String, required: true },
+  LocationNoModule:{ type: String, required: true },
+  side:{ type: String, required: true },
+  // Module SeverityMatrix
+  SeverityDefects1:{ type: String, required: true },
+  SeverityDefects2:{ type: String, required: true },
+  SeverityDefects3:{ type: String, required: true },
+  SeverityDefects4:{ type: String, required: true },
+  SeverityDefects5:{ type: String, required: true },
+  ImageSeverityScore:{ type: String, required: true },
+  ModuleClass:{ type: String, required: true },
+
+
+
+  // Status: { type: String, required: true },
 
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
@@ -571,11 +603,10 @@ var ElInspectionReport = mongoose.model(
 
 const ElInspectionReportValidation = Joi.object().keys({
   
-  Date: Joi.date().required(),
   OANumber: Joi.string()
     .max(100)
     .required(),
-  
+  Date: Joi.date().required(),
   State: Joi.string()
     .max(100)
     .required(),
@@ -589,51 +620,121 @@ const ElInspectionReportValidation = Joi.object().keys({
   ReportedBy: Joi.string()
     .max(100)
     .required(),
-
   SiteOwnerClient: Joi.string()
     .max(100)
     .required(),
-
-  Commissioning: Joi.string()
-  .max(100)
-  .required(),
-
+  Commissioning: Joi.date().required(),
   MWCapacityAC: Joi.string()
     .max(100)
     .required(),
   MWCapacityDC: Joi.string()
     .max(100)
     .required(),
-  // ModuleMake1: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // ModuleMake2: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // InstalledCapacityMW1: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // InstalledCapacityMW2: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // GroundMounted: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // InstallationAngle: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // Orientation: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // ModulesIn1Column: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // ModulesIn1String: Joi.string()
-  //   .max(100)
-  //   .required(),
-  // Tracker: Joi.string()
-  //   .max(100)
-  //   .required()
+  ModuleMake1: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake2: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW1: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW2: Joi.string()
+    .max(100)
+    .required(),
+  GroundMounted: Joi.string()
+    .max(100)
+    .required(),
+  InstallationAngle: Joi.string()
+    .max(100)
+    .required(),
+  Orientation: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1Column: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1String: Joi.string()
+    .max(100)
+    .required(),
+  Tracker: Joi.string()
+    .max(100)
+    .required(),
+
+    // inspection result
+    AcceptanceValue: Joi.string()
+    .max(100)
+    .required(),
+    NoOfOk: Joi.string()
+    .max(100)
+    .required(),
+    NoOfNotOk: Joi.string()
+    .max(100)
+    .required(),
+    NoOfRepairable: Joi.string()
+    .max(100)
+    .required(),
+    NoOfNonRepairable: Joi.string()
+    .max(100)
+    .required(),
+    // observation form 
+    Observation1: Joi.string()
+    .max(100)
+    .required(),
+    Observation2: Joi.string()
+    .max(100)
+    .required(),
+    Observation3: Joi.string()
+    .max(100)
+    .required(),
+    Observation4: Joi.string()
+    .max(100)
+    .required(),
+    InspectionDoneBy: Joi.string()
+    .max(100)
+    .required(),
+    InspectionReviewedBy: Joi.string()
+    .max(100)
+    .required(),
+    CheckingTogether: Joi.string()
+    .max(100)
+    .required(),
+    SiteRepresentative: Joi.string()
+    .max(100)
+    .required(),
+    ModuleSerialNo: Joi.string()
+    .max(100)
+    .required(),
+    TableNo: Joi.string()
+    .max(100)
+    .required(),
+    LocationNoModule: Joi.string()
+    .max(100)
+    .required(),
+    side: Joi.string()
+    .max(100)
+    .required(),
+    SeverityDefects1: Joi.string()
+    .max(100)
+    .required(),
+    SeverityDefects2: Joi.string()
+    .max(100)
+    .required(),
+    SeverityDefects3: Joi.string()
+    .max(100)
+    .required(),
+    SeverityDefects4: Joi.string()
+    .max(100)
+    .required(),
+    SeverityDefects5: Joi.string()
+    .max(100)
+    .required(),
+    ImageSeverityScore: Joi.string()
+    .max(100)
+    .required(),
+    ModuleClass: Joi.string()
+    .max(100)
+    .required(),
 
   
 });
@@ -1383,6 +1484,40 @@ var droneThermographyInspectionReportSchema = new mongoose.Schema({
   CustomerName: { type: String, required: true },
   SiteName: { type: String, required: true },
   ReportedBy: { type: String, required: true },
+  SiteOwnerClient: { type: String, required: true },
+  Commissioning: { type: Date, required: true },
+  MWCapacityAC: { type: String, required: true },
+  MWCapacityDC: { type: String, required: true },
+  ModuleMake1:{ type: String, required: true },
+  ModuleMake2:{ type: String, required: true },
+  InstalledCapacityMW1:{ type: String, required: true },
+  InstalledCapacityMW2:{ type: String, required: true },
+  GroundMounted:{ type: String, required: true },
+  InstallationAngle:{ type: String, required: true },
+  Orientation:{ type: String, required: true },
+  ModulesIn1Column:{ type: String, required: true },
+  ModulesIn1String: { type: String, required: true },
+  Tracker:{ type: String, required: true },
+  // FLIGHT dETAIL
+  InspectionCompleted: { type: String, required: true },
+  InspectionInstrument: { type: String, required: true },
+  NoofFlightsDone: { type: String, required: true },
+  PilotName: { type: String, required: true },
+  CoPilotName: { type: String, required: true },
+  // FlightHeight: { type: String, required: true },
+  // ImageInterval: { type: String, required: true },
+  // FlyingSpeed: { type: String, required: true },
+  // ImageOverlap: { type: String, required: true },
+  // observation form 
+  Observation1: { type: String, required: true },
+  Observation2: { type: String, required: true },
+  Observation3: { type: String, required: true },
+  Observation4: { type: String, required: true },
+  InspectionDoneBy: { type: String, required: true },
+  InspectionReviewedBy: { type: String, required: true },
+  CheckingTogether: { type: String, required: true },
+  SiteRepresentative: { type: String, required: true },
+  // Status: { type: String, required: true },
   employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }]
 });
 droneThermographyInspectionReportSchema.plugin(autoIncrement.plugin, {
@@ -1411,6 +1546,88 @@ const DroneThermographyInspectionReportValidation = Joi.object().keys({
     .max(100)
     .required(),
   ReportedBy: Joi.string()
+    .max(100)
+    .required(),
+  SiteOwnerClient: Joi.string()
+    .max(100)
+    .required(),
+  Commissioning: Joi.date().required(),
+  MWCapacityAC: Joi.string()
+    .max(100)
+    .required(),
+  MWCapacityDC: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake1: Joi.string()
+    .max(100)
+    .required(),
+  ModuleMake2: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW1: Joi.string()
+    .max(100)
+    .required(),
+  InstalledCapacityMW2: Joi.string()
+    .max(100)
+    .required(),
+  GroundMounted: Joi.string()
+    .max(100)
+    .required(),
+  InstallationAngle: Joi.string()
+    .max(100)
+    .required(),
+  Orientation: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1Column: Joi.string()
+    .max(100)
+    .required(),
+  ModulesIn1String: Joi.string()
+    .max(100)
+    .required(),
+  Tracker: Joi.string()
+    .max(100)
+    .required(),
+
+    // inspection result
+    InspectionCompleted: Joi.string()
+    .max(100)
+    .required(),
+    InspectionInstrument: Joi.string()
+    .max(100)
+    .required(),
+    NoofFlightsDone: Joi.string()
+    .max(100)
+    .required(),
+    PilotName: Joi.string()
+    .max(100)
+    .required(),
+    CoPilotName: Joi.string()
+    .max(100)
+    .required(),
+    // observation form 
+    Observation1: Joi.string()
+    .max(100)
+    .required(),
+    Observation2: Joi.string()
+    .max(100)
+    .required(),
+    Observation3: Joi.string()
+    .max(100)
+    .required(),
+    Observation4: Joi.string()
+    .max(100)
+    .required(),
+    InspectionDoneBy: Joi.string()
+    .max(100)
+    .required(),
+    InspectionReviewedBy: Joi.string()
+    .max(100)
+    .required(),
+    CheckingTogether: Joi.string()
+    .max(100)
+    .required(),
+    SiteRepresentative: Joi.string()
     .max(100)
     .required(),
   
@@ -6209,17 +6426,46 @@ app.post("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
             Commissioning:req.body.Commissioning,
             MWCapacityAC:req.body.MWCapacityAC,
             MWCapacityDC:req.body.MWCapacityDC,
-            // ModuleMake1:req.body.ModuleMake1,
-            // ModuleMake2:req.body.ModuleMake2,
-            // InstalledCapacityMW1:req.body.InstalledCapacityMW1,
-            // InstalledCapacityMW2:req.body.InstalledCapacityMW2,
-            // GroundMounted:req.body.GroundMounted,
-            // InstallationAngle:req.body.InstallationAngle,
-            // Orientation:req.body.Orientation,
-            // ModulesIn1Column:req.body.ModulesIn1Column,
-            // ModulesIn1String: req.body.ModulesIn1String,
-            // Tracker:req.body.Tracker
-
+            ModuleMake1:req.body.ModuleMake1,
+            ModuleMake2:req.body.ModuleMake2,
+            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            GroundMounted:req.body.GroundMounted,
+            InstallationAngle:req.body.InstallationAngle,
+            Orientation:req.body.Orientation,
+            ModulesIn1Column:req.body.ModulesIn1Column,
+            ModulesIn1String: req.body.ModulesIn1String,
+            Tracker:req.body.Tracker,
+            // inspection result
+            AcceptanceValue:req.body.AcceptanceValue,
+            NoOfOk:req.body.NoOfOk,
+            NoOfNotOk:req.body.NoOfNotOk,
+            NoOfRepairable:req.body.NoOfRepairable,
+            NoOfNonRepairable:req.body.NoOfNonRepairable,
+            // observation form 
+            Observation1:req.body.Observation1,
+            Observation2:req.body.Observation2,
+            Observation3:req.body.Observation3,
+            Observation4:req.body.Observation4,
+            InspectionDoneBy:req.body.InspectionDoneBy,
+            InspectionReviewedBy:req.body.InspectionReviewedBy,
+            CheckingTogether:req.body.CheckingTogether,
+            SiteRepresentative:req.body.SiteRepresentative,
+            // Status: req.body.Status,
+             // Module details
+            ModuleSerialNo:req.body.ModuleSerialNo,
+            TableNo: req.body.TableNo,
+            LocationNoModule:req.body.LocationNoModule,
+            side:req.body.side,
+          // Module SeverityMatrix
+            SeverityDefects1:req.body.SeverityDefects1,
+            SeverityDefects2:req.body.SeverityDefects2,
+            SeverityDefects3:req.body.SeverityDefects3,
+            SeverityDefects4:req.body.SeverityDefects4,
+            SeverityDefects5:req.body.SeverityDefects5,
+            ImageSeverityScore:req.body.ImageSeverityScore,
+            ModuleClass:req.body.ModuleClass,
+            
             employee: req.params.id
 
           };
@@ -6262,28 +6508,57 @@ app.put("/api/el-inspection-report-emp/:id", verifyEmployee, (req, res) => {
 
       newElInspectionReport= {
         
-            Date: req.body.Date,
-            OANumber: req.body.OANumber,
-            State:req.body.State,
-            CustomerName: req.body.CustomerName,
-            SiteName: req.body.SiteName,
-            ReportedBy:req.body.ReportedBy,
-            SiteOwnerClient:req.body.SiteOwnerClient,
-            Commissioning:req.body.Commissioning,
-            MWCapacityAC:req.body.MWCapacityAC,
-            MWCapacityDC:req.body.MWCapacityDC,
-            ModuleMake1:req.body.ModuleMake1,
-            ModuleMake2:req.body.ModuleMake2,
-            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
-            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
-            GroundMounted:req.body.GroundMounted,
-            InstallationAngle:req.body.InstallationAngle,
-            Orientation:req.body.Orientation,
-            ModulesIn1Column:req.body.ModulesIn1Column,
-            ModulesIn1String: req.body.ModulesIn1String,
-            Tracker:req.body.Tracker,
-
-            employee: req.params.id
+        Date: req.body.Date,
+        OANumber: req.body.OANumber,
+        State:req.body.State,
+        CustomerName: req.body.CustomerName,
+        SiteName: req.body.SiteName,
+        ReportedBy:req.body.ReportedBy,
+        SiteOwnerClient:req.body.SiteOwnerClient,
+        Commissioning:req.body.Commissioning,
+        MWCapacityAC:req.body.MWCapacityAC,
+        MWCapacityDC:req.body.MWCapacityDC,
+        ModuleMake1:req.body.ModuleMake1,
+        ModuleMake2:req.body.ModuleMake2,
+        InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+        InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+        GroundMounted:req.body.GroundMounted,
+        InstallationAngle:req.body.InstallationAngle,
+        Orientation:req.body.Orientation,
+        ModulesIn1Column:req.body.ModulesIn1Column,
+        ModulesIn1String: req.body.ModulesIn1String,
+        Tracker:req.body.Tracker,
+        // inspection result
+        AcceptanceValue:req.body.AcceptanceValue,
+        NoOfOk:req.body.NoOfOk,
+        NoOfNotOk:req.body.NoOfNotOk,
+        NoOfRepairable:req.body.NoOfRepairable,
+        NoOfNonRepairable:req.body.NoOfNonRepairable,
+        // observation form 
+        Observation1:req.body.Observation1,
+        Observation2:req.body.Observation2,
+        Observation3:req.body.Observation3,
+        Observation4:req.body.Observation4,
+        InspectionDoneBy:req.body.InspectionDoneBy,
+        InspectionReviewedBy:req.body.InspectionReviewedBy,
+        CheckingTogether:req.body.CheckingTogether,
+        SiteRepresentative:req.body.SiteRepresentative,
+        // Status: req.body.Status,
+        // Module details
+        ModuleSerialNo:req.body.ModuleSerialNo,
+        TableNo: req.body.TableNo,
+        LocationNoModule:req.body.LocationNoModule,
+        side:req.body.side,
+      // Module SeverityMatrix
+        SeverityDefects1:req.body.SeverityDefects1,
+        SeverityDefects2:req.body.SeverityDefects2,
+        SeverityDefects3:req.body.SeverityDefects3,
+        SeverityDefects4:req.body.SeverityDefects4,
+        SeverityDefects5:req.body.SeverityDefects5,
+        ImageSeverityScore:req.body.ImageSeverityScore,
+        ModuleClass:req.body.ModuleClass,
+        
+        employee: req.params.id
       };
 
       ElInspectionReport.findByIdAndUpdate(
@@ -6747,7 +7022,7 @@ app.delete("/api/manual-thermography-report-hr/:id/:id2", verifyHR, (req, res) =
   });
 });
 
-/////////////////////
+/////////////////////`
 ////////////droneThermographyInspectionReport  Employee  
 app.get("/api/drone-thermography-inspection-emp/:id", verifyEmployee, (req, res) => {
   console.log(req.params.id);
@@ -6798,6 +7073,38 @@ app.post("/api/drone-thermography-inspection-emp/:id", verifyEmployee, (req, res
             CustomerName: req.body.CustomerName,
             SiteName: req.body.SiteName,
             ReportedBy:req.body.ReportedBy,
+            SiteOwnerClient:req.body.SiteOwnerClient,
+            Commissioning:req.body.Commissioning,
+            MWCapacityAC:req.body.MWCapacityAC,
+            MWCapacityDC:req.body.MWCapacityDC,
+            ModuleMake1:req.body.ModuleMake1,
+            ModuleMake2:req.body.ModuleMake2,
+            InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+            InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+            GroundMounted:req.body.GroundMounted,
+            InstallationAngle:req.body.InstallationAngle,
+            Orientation:req.body.Orientation,
+            ModulesIn1Column:req.body.ModulesIn1Column,
+            ModulesIn1String: req.body.ModulesIn1String,
+            Tracker:req.body.Tracker,
+            // inspection result
+
+            InspectionCompleted:req.body.InspectionCompleted,
+            InspectionInstrument:req.body.InspectionInstrument,
+            NoofFlightsDone:req.body.NoofFlightsDone,
+            PilotName:req.body.PilotName,
+            CoPilotName:req.body.CoPilotName,
+            // observation form 
+            Observation1:req.body.Observation1,
+            Observation2:req.body.Observation2,
+            Observation3:req.body.Observation3,
+            Observation4:req.body.Observation4,
+            InspectionDoneBy:req.body.InspectionDoneBy,
+            InspectionReviewedBy:req.body.InspectionReviewedBy,
+            CheckingTogether:req.body.CheckingTogether,
+            SiteRepresentative:req.body.SiteRepresentative,
+            // Status: req.body.Status,
+            
             employee: req.params.id
 
           };
@@ -6840,13 +7147,44 @@ app.put("/api/drone-thermography-inspection-emp/:id", verifyEmployee, (req, res)
 
       newDroneThermographyInspectionReport= {
         
-            Date: req.body.Date,
-            OANumber: req.body.OANumber,
-            State:req.body.State,
-            CustomerName: req.body.CustomerName,
-            SiteName: req.body.SiteName,
-            ReportedBy:req.body.ReportedBy,
-            employee: req.params.id
+        Date: req.body.Date,
+        OANumber: req.body.OANumber,
+        State:req.body.State,
+        CustomerName: req.body.CustomerName,
+        SiteName: req.body.SiteName,
+        ReportedBy:req.body.ReportedBy,
+        SiteOwnerClient:req.body.SiteOwnerClient,
+        Commissioning:req.body.Commissioning,
+        MWCapacityAC:req.body.MWCapacityAC,
+        MWCapacityDC:req.body.MWCapacityDC,
+        ModuleMake1:req.body.ModuleMake1,
+        ModuleMake2:req.body.ModuleMake2,
+        InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+        InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+        GroundMounted:req.body.GroundMounted,
+        InstallationAngle:req.body.InstallationAngle,
+        Orientation:req.body.Orientation,
+        ModulesIn1Column:req.body.ModulesIn1Column,
+        ModulesIn1String: req.body.ModulesIn1String,
+        Tracker:req.body.Tracker,
+        // inspection result
+            InspectionCompleted:req.body.InspectionCompleted,
+            InspectionInstrument:req.body.InspectionInstrument,
+            NoofFlightsDone:req.body.NoofFlightsDone,
+            PilotName:req.body.PilotName,
+            CoPilotName:req.body.CoPilotName,
+        // observation form 
+        Observation1:req.body.Observation1,
+        Observation2:req.body.Observation2,
+        Observation3:req.body.Observation3,
+        Observation4:req.body.Observation4,
+        InspectionDoneBy:req.body.InspectionDoneBy,
+        InspectionReviewedBy:req.body.InspectionReviewedBy,
+        CheckingTogether:req.body.CheckingTogether,
+        SiteRepresentative:req.body.SiteRepresentative,
+        // Status: req.body.Status,
+        
+        employee: req.params.id
       };
 
       DroneThermographyInspectionReport.findByIdAndUpdate(
@@ -6930,7 +7268,44 @@ app.put("/api/drone-thermography-inspection-hr/:id", verifyHR, (req, res) => {
       let newDroneThermographyInspectionReport;
 
       newDroneThermographyInspectionReport = {
-        Status: req.body.Status
+        Date: req.body.Date,
+        OANumber: req.body.OANumber,
+        State:req.body.State,
+        CustomerName: req.body.CustomerName,
+        SiteName: req.body.SiteName,
+        ReportedBy:req.body.ReportedBy,
+        SiteOwnerClient:req.body.SiteOwnerClient,
+        Commissioning:req.body.Commissioning,
+        MWCapacityAC:req.body.MWCapacityAC,
+        MWCapacityDC:req.body.MWCapacityDC,
+        ModuleMake1:req.body.ModuleMake1,
+        ModuleMake2:req.body.ModuleMake2,
+        InstalledCapacityMW1:req.body.InstalledCapacityMW1,
+        InstalledCapacityMW2:req.body.InstalledCapacityMW2,
+        GroundMounted:req.body.GroundMounted,
+        InstallationAngle:req.body.InstallationAngle,
+        Orientation:req.body.Orientation,
+        ModulesIn1Column:req.body.ModulesIn1Column,
+        ModulesIn1String: req.body.ModulesIn1String,
+        Tracker:req.body.Tracker,
+        // inspection result
+        InspectionCompleted:req.body.InspectionCompleted,
+        InspectionInstrument:req.body.InspectionInstrument,
+        NoofFlightsDone:req.body.NoofFlightsDone,
+        PilotName:req.body.PilotName,
+        CoPilotName:req.body.CoPilotName,
+        // observation form 
+        Observation1:req.body.Observation1,
+        Observation2:req.body.Observation2,
+        Observation3:req.body.Observation3,
+        Observation4:req.body.Observation4,
+        InspectionDoneBy:req.body.InspectionDoneBy,
+        InspectionReviewedBy:req.body.InspectionReviewedBy,
+        CheckingTogether:req.body.CheckingTogether,
+        SiteRepresentative:req.body.SiteRepresentative,
+        // Status: req.body.Status,
+        
+        employee: req.params.id
       };
       DroneThermographyInspectionReport.findByIdAndUpdate(
         req.params.id,
